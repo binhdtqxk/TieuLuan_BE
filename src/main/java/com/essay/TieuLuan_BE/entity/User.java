@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Getter
 @Setter
@@ -17,28 +18,18 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
-    @Column(name = "user_name")
-    private String username;
     @Column(name = "email")
     private String email;
     @Column(name = "password")
     private String password;
     @Column(name = "fullName")
     private String fullName;
-    @Column(name = "profile_picture")
-    private String profilePicture;
-    @Column(name = "background_photo")
-    private String backgroundPhoto;
-    @Column(name = "overview")
-    private String overview;
-    @Column(name = "location")
-    private String location;
-    @Column(name = "career")
-    private String career;
+    @Column(name = "birthDay")
+    private LocalDate birthDay;
+    @Column(name = "gender")
+    private int gender;
     @Column(name = "createdAt")
-    private LocalDateTime createdAt;
-    @Column(name = "home")
-    private String home;
+    private LocalDate createdAt;
     @Column(name = "updatedAt")
-    private LocalDateTime updatedAt;
+    private LocalDate updatedAt;
 }

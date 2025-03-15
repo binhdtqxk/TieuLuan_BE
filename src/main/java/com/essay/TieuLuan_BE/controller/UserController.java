@@ -6,16 +6,17 @@ import com.essay.TieuLuan_BE.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/SignUp")
+@RequestMapping("/api/signUp")
 public class UserController {
 
     private UserService userService;
-
+    @PostMapping
     //build Sign up REST API
     public ResponseEntity<UserDto> signUp(@RequestBody UserDto userDto) {
         UserDto savedUser= userService.createUser(userDto);
