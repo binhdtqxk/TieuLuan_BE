@@ -1,35 +1,50 @@
 package com.essay.TieuLuan_BE.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
 @Entity
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
-    @Column(name = "email")
-    private String email;
-    @Column(name = "password")
-    private String password;
-    @Column(name = "fullName")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String fullName;
-    @Column(name = "birthDay")
-    private LocalDate birthDay;
-    @Column(name = "gender")
-    private int gender;
-    @Column(name = "createdAt")
-    private LocalDate createdAt;
-    @Column(name = "updatedAt")
-    private LocalDate updatedAt;
+    private String location;
+    private String website;
+    private LocalDate birthDate;
+    private String email;
+    private String password;
+    private String mobile;
+    private String image;
+    private String backgroundImage;
+    private String bio;
+    private boolean req_user;
+    private boolean login_with_google;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Twit> twit=new ArrayList<>();
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Like> likes=new ArrayList<>();
+
+    @Embedded
+    private Varification verification;
+
+    @JsonIgnore
+    @ManyToMany
+    private List<User> followers=new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToMany
+    private List<User> following=new ArrayList<>();
 }
+//+84
