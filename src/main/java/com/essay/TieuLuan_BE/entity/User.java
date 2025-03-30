@@ -11,7 +11,6 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,7 +18,7 @@ public class User {
     private String fullName;
     private String location;
     private String website;
-    private LocalDate birthDate;
+    private String birthDate;
     private String email;
     private String password;
     private String mobile;
