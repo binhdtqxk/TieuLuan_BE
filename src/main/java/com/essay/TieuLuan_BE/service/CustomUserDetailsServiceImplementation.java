@@ -1,4 +1,4 @@
-package com.essay.TieuLuan_BE.service.impl;
+package com.essay.TieuLuan_BE.service;
 
 import com.essay.TieuLuan_BE.entity.User;
 import com.essay.TieuLuan_BE.repository.UserRepository;

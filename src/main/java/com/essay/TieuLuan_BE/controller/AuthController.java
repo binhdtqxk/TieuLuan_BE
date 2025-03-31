@@ -6,7 +6,7 @@ import com.essay.TieuLuan_BE.entity.Varification;
 import com.essay.TieuLuan_BE.exception.UserException;
 import com.essay.TieuLuan_BE.repository.UserRepository;
 import com.essay.TieuLuan_BE.response.AuthResponse;
-import com.essay.TieuLuan_BE.service.impl.CustomUserDetailsServiceImplementation;
+import com.essay.TieuLuan_BE.service.CustomUserDetailsServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
