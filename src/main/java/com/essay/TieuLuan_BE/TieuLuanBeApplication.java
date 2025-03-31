@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TieuLuanBeApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(TieuLuanBeApplication.class, args);
 	}
 
