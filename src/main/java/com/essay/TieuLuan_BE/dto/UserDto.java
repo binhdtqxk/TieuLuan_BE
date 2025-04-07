@@ -17,7 +17,7 @@ public class UserDto {
     private String mobile;
     private String backgroundImage;
     private String bio;
-    private boolean req_user;
+    private boolean req_user; //Request User or the current user sending the request to server
 
     private boolean login_with_google;
 
@@ -25,7 +25,7 @@ public class UserDto {
 
     private List<UserDto> followings = new ArrayList<>();
 
-    private boolean followed;
+    private boolean followed;//ReqUser is following this user or not
 
     private boolean isVerified;
 
