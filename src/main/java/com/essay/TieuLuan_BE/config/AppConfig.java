@@ -33,8 +33,8 @@ public class AppConfig {
                         .anyRequest().permitAll()
                 ).sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
                 addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class);
-        http.formLogin(withDefaults());
-        http.httpBasic(withDefaults());
+//        http.formLogin(withDefaults());
+//        http.httpBasic(withDefaults());
         return http.build();
     }
 

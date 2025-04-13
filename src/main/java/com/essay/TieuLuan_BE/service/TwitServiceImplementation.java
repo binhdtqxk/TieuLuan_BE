@@ -88,7 +88,6 @@ public class TwitServiceImplementation implements TwitService {
         twit.setReplyFor(OGTwit);
 
         Twit saveReply = twitRepository.save(twit);
-        //Lưu ý nhẹ
         OGTwit.getReplyTwits().add(saveReply);
         twitRepository.save(OGTwit);
         return OGTwit;
