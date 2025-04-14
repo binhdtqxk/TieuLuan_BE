@@ -1,18 +1,29 @@
 package com.essay.TieuLuan_BE.service;
 
+import com.essay.TieuLuan_BE.dto.NotificationDto;
+import com.essay.TieuLuan_BE.dto.TwitDto;
+import com.essay.TieuLuan_BE.dto.UserDto;
+import com.essay.TieuLuan_BE.dto.mapper.TwitDtoMapper;
+import com.essay.TieuLuan_BE.dto.mapper.UserDtoMapper;
 import com.essay.TieuLuan_BE.entity.Like;
 import com.essay.TieuLuan_BE.entity.Twit;
 import com.essay.TieuLuan_BE.entity.User;
 import com.essay.TieuLuan_BE.exception.TwitException;
 import com.essay.TieuLuan_BE.exception.UserException;
+import com.essay.TieuLuan_BE.notificationService.NotificationService;
+import com.essay.TieuLuan_BE.notificationService.NotificationType;
 import com.essay.TieuLuan_BE.repository.LikeRepository;
 import com.essay.TieuLuan_BE.repository.TwitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+
 @Service
 public class LikeServiceImplementation implements LikeService{
+    @Autowired
+    NotificationService notificationService;
     @Autowired
     private LikeRepository likeRepository;
     @Autowired
@@ -22,6 +33,7 @@ public class LikeServiceImplementation implements LikeService{
     //Like specific twit by specific user
     @Override
     public Like likeTwit(Long twitId, User user) throws UserException, TwitException {
+        System.out.println("bat dau vao liketwit");
         Like islikeExist = likeRepository.isLikeExist(user.getId(), twitId);
         if (islikeExist != null) {
             likeRepository.deleteById(islikeExist.getId()); //if user already likes it then unlike
@@ -34,6 +46,14 @@ public class LikeServiceImplementation implements LikeService{
         Like savedLike = likeRepository.save(like);
         twit.getLikes().add(savedLike);
         twitRepository.save(twit);
+        if(!Objects.equals(twit.getUser().getId(), user.getId())){
+            System.out.println("bat dau tao dto ");
+            UserDto sender= UserDtoMapper.toUserDto(user);
+            UserDto recipient= UserDtoMapper.toUserDto(twit.getUser());
+            TwitDto twitDto= TwitDtoMapper.toTwitDto(twit,user);
+            notificationService.sendNotification(NotificationType.LIKE,sender,recipient,twitDto);
+            System.out.println("gui xong");
+        }
         return savedLike;
     }
     //Get likes of a specific twit
