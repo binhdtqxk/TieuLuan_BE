@@ -47,11 +47,9 @@ public class LikeServiceImplementation implements LikeService{
         twit.getLikes().add(savedLike);
         twitRepository.save(twit);
         if(!Objects.equals(twit.getUser().getId(), user.getId())){
-            System.out.println("bat dau tao dto ");
-            UserDto sender= UserDtoMapper.toUserDto(user);
-            UserDto recipient= UserDtoMapper.toUserDto(twit.getUser());
-            TwitDto twitDto= TwitDtoMapper.toTwitDto(twit,user);
-            notificationService.sendNotification(NotificationType.LIKE,sender,recipient,twitDto);
+            System.out.println("bat dau tao ");
+            User recipient=twit.getUser();
+            notificationService.sendNotification(NotificationType.LIKE, user,recipient,twit);
             System.out.println("gui xong");
         }
         return savedLike;

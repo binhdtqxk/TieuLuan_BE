@@ -3,22 +3,33 @@ package com.essay.TieuLuan_BE.notificationService;
 import com.essay.TieuLuan_BE.dto.NotificationDto;
 import com.essay.TieuLuan_BE.dto.TwitDto;
 import com.essay.TieuLuan_BE.dto.UserDto;
+import com.essay.TieuLuan_BE.dto.mapper.NotificationDtoMapper;
+import com.essay.TieuLuan_BE.entity.Notification;
+import com.essay.TieuLuan_BE.entity.Twit;
+import com.essay.TieuLuan_BE.entity.User;
+import com.essay.TieuLuan_BE.repository.NotificationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FollowNotificationStrategy implements NotificationStrategy {
+
+    @Autowired
+    NotificationRepository notificationRepository;
     @Override
     public NotificationType getNotificationType() {
         return NotificationType.FOLLOW;
     }
 
     @Override
-    public NotificationDto handleNotification(UserDto sender, UserDto recipient, TwitDto twit) {
-        NotificationDto notificationDto = new NotificationDto();
-        notificationDto.setType(NotificationType.FOLLOW);
-        notificationDto.setSender(sender);
+    public NotificationDto handleNotification(User sender, User recipient, Twit twit) {
+        Notification notification = new Notification();
+        notification.setType(NotificationType.FOLLOW);
+        notification.setSender(sender);
         String fullName= sender.getFullName().replace(" ", "_")+ sender.getId();
-        notificationDto.setContent(fullName+" just followed you");
-        return notificationDto;
+        notification.setContent(fullName+" just followed you");
+        notification.setRecipient(recipient);
+        notificationRepository.save(notification);
+        return NotificationDtoMapper.toNotificationDto(notification);
     }
 }

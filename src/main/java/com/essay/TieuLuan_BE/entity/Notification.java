@@ -27,4 +27,7 @@ public class Notification {
 
     @ManyToOne
     private Twit twit;
+
+    private LocalDateTime createdAt;
+
 }

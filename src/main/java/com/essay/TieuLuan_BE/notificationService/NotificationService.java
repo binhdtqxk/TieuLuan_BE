@@ -1,9 +1,9 @@
 package com.essay.TieuLuan_BE.notificationService;
 
-import com.essay.TieuLuan_BE.dto.TwitDto;
-import com.essay.TieuLuan_BE.dto.UserDto;
+import com.essay.TieuLuan_BE.entity.Twit;
+import com.essay.TieuLuan_BE.entity.User;
 
 public interface NotificationService {
 
-    void sendNotification(NotificationType type, UserDto sender, UserDto recipient, TwitDto twit);
+    void sendNotification(NotificationType type, User sender, User recipient, Twit twit);
 }

@@ -3,6 +3,8 @@ package com.essay.TieuLuan_BE.notificationService;
 import com.essay.TieuLuan_BE.dto.NotificationDto;
 import com.essay.TieuLuan_BE.dto.TwitDto;
 import com.essay.TieuLuan_BE.dto.UserDto;
+import com.essay.TieuLuan_BE.entity.Twit;
+import com.essay.TieuLuan_BE.entity.User;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -25,16 +27,16 @@ public class NotificationServiceImpl implements NotificationService {
     @PostConstruct
     public void init() {
         strategyMap = strategies.stream()
-                .collect(Collectors.toMap(NotificationStrategy::getNotificationType, s -> s)); //map notification type to each strategy
+                .collect(Collectors.toMap(NotificationStrategy::getNotificationType, s -> s));
     }
 
     @Override
-    public void sendNotification(NotificationType type, UserDto sender, UserDto recipient, TwitDto twit) {
+    public void sendNotification(NotificationType type, User sender, User recipient, Twit twit) {
         NotificationStrategy strategy = strategyMap.get(type);
         if(strategy == null) {
             throw new IllegalArgumentException("No strategy found for type " + type);
         }
         NotificationDto notificationDto = strategy.handleNotification(sender,recipient,twit);
-        kafkaTemplate.send("notification", notificationDto);
+        if(notificationDto!=null) kafkaTemplate.send("notification", notificationDto);
     }
 }

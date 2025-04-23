@@ -12,4 +12,5 @@ public class NotificationDto {
     private UserDto recipient;
     private String content;
     private TwitDto twit;
+    private LocalDateTime createdAt;
 }
