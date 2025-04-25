@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Date;
 @Service
-public class JwtProvider {
+public class JwtProvider { //Provide jwt token from email and role(optional)
     SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
 
     public String generateToken(Authentication auth) {
@@ -21,6 +21,7 @@ public class JwtProvider {
                 .compact();
         return jwt;
     }
+    //Take email from claims
     public String getEmailFromToken(String jwt) {
         jwt=jwt.substring(7);
         Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
