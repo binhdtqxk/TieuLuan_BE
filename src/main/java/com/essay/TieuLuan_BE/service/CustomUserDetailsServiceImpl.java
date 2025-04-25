@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CustomUserDetailsServiceImplementation implements UserDetailsService {
+public class CustomUserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 

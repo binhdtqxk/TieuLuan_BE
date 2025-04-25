@@ -1,4 +1,4 @@
-package com.essay.TieuLuan_BE.notificationService;
+package com.essay.TieuLuan_BE.service.notificationService;
 
 import com.essay.TieuLuan_BE.dto.NotificationDto;
 import com.essay.TieuLuan_BE.repository.NotificationRepository;
@@ -23,6 +23,6 @@ public class NotificationKafkaConsumer {
     public void consumeNotification(NotificationDto notificationDto) {
 
         messagingTemplate.convertAndSend("/topic/notifications", notificationDto);
-        System.out.println("Đã gửi thông báo qua WebSocket: " + notificationDto);
+//        System.out.println("Đã gửi thông báo qua WebSocket: " + notificationDto);
     }
 }

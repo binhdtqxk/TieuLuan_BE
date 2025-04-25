@@ -1,4 +1,4 @@
-package com.essay.TieuLuan_BE.notificationService;
+package com.essay.TieuLuan_BE.service.notificationService;
 
 import com.essay.TieuLuan_BE.dto.NotificationDto;
 import com.essay.TieuLuan_BE.dto.mapper.NotificationDtoMapper;

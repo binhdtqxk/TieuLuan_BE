@@ -6,7 +6,7 @@ import com.essay.TieuLuan_BE.entity.Varification;
 import com.essay.TieuLuan_BE.exception.UserException;
 import com.essay.TieuLuan_BE.repository.UserRepository;
 import com.essay.TieuLuan_BE.response.AuthResponse;
-import com.essay.TieuLuan_BE.service.CustomUserDetailsServiceImplementation;
+import com.essay.TieuLuan_BE.service.CustomUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class AuthController {
     private JwtProvider jwtProvider;
 
     @Autowired
-    private CustomUserDetailsServiceImplementation customUserDetails;
+    private CustomUserDetailsServiceImpl customUserDetails;
 
     @PostMapping("/signup") //Create new user
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws UserException {

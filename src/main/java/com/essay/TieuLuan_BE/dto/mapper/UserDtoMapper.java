@@ -35,4 +35,13 @@ public class UserDtoMapper {
         }
         return userDtos;
     }
+    //mapper UserDto for messaging
+    public static UserDto toUserSummaryDto(User user) {
+        if (user == null) return null;
+        UserDto dto = new UserDto();
+        dto.setId(user.getId());
+        dto.setFullName(user.getFullName());
+        dto.setImage(user.getImage());
+        return dto;
+    }
 }

@@ -1,8 +1,6 @@
-package com.essay.TieuLuan_BE.notificationService;
+package com.essay.TieuLuan_BE.service.notificationService;
 
 import com.essay.TieuLuan_BE.dto.NotificationDto;
-import com.essay.TieuLuan_BE.dto.TwitDto;
-import com.essay.TieuLuan_BE.dto.UserDto;
 import com.essay.TieuLuan_BE.dto.mapper.NotificationDtoMapper;
 import com.essay.TieuLuan_BE.entity.Notification;
 import com.essay.TieuLuan_BE.entity.Twit;

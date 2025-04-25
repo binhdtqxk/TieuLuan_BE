@@ -1,6 +1,6 @@
 package com.essay.TieuLuan_BE.dto;
 
-import com.essay.TieuLuan_BE.notificationService.NotificationType;
+import com.essay.TieuLuan_BE.service.notificationService.NotificationType;
 import lombok.Data;
 import java.time.LocalDateTime;
 

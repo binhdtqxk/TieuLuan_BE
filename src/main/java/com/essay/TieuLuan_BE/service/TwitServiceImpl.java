@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 @Service
-public class TwitServiceImplementation implements TwitService {
+public class TwitServiceImpl implements TwitService {
 
     @Autowired
     private TwitRepository twitRepository;

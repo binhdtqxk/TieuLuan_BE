@@ -1,17 +1,12 @@
 package com.essay.TieuLuan_BE.service;
 
-import com.essay.TieuLuan_BE.dto.NotificationDto;
-import com.essay.TieuLuan_BE.dto.TwitDto;
-import com.essay.TieuLuan_BE.dto.UserDto;
-import com.essay.TieuLuan_BE.dto.mapper.TwitDtoMapper;
-import com.essay.TieuLuan_BE.dto.mapper.UserDtoMapper;
 import com.essay.TieuLuan_BE.entity.Like;
 import com.essay.TieuLuan_BE.entity.Twit;
 import com.essay.TieuLuan_BE.entity.User;
 import com.essay.TieuLuan_BE.exception.TwitException;
 import com.essay.TieuLuan_BE.exception.UserException;
-import com.essay.TieuLuan_BE.notificationService.NotificationService;
-import com.essay.TieuLuan_BE.notificationService.NotificationType;
+import com.essay.TieuLuan_BE.service.notificationService.NotificationService;
+import com.essay.TieuLuan_BE.service.notificationService.NotificationType;
 import com.essay.TieuLuan_BE.repository.LikeRepository;
 import com.essay.TieuLuan_BE.repository.TwitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class LikeServiceImplementation implements LikeService{
+public class LikeServiceImpl implements LikeService{
     @Autowired
     NotificationService notificationService;
     @Autowired

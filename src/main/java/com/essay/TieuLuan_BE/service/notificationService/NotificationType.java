@@ -1,4 +1,4 @@
-package com.essay.TieuLuan_BE.notificationService;
+package com.essay.TieuLuan_BE.service.notificationService;
 
 public enum NotificationType {
     LIKE,
