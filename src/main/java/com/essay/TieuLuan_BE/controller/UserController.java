@@ -70,4 +70,10 @@ public class UserController {
 
         return new ResponseEntity<>(userDto, HttpStatus.ACCEPTED);
     }
+    @GetMapping("/followers")
+    public ResponseEntity<List<UserDto>> getFollowers(@RequestHeader("Authorization") String jwt) throws UserException {
+        User me = userService.findUserProfileByJwt(jwt);
+        List<UserDto> followers = UserDtoMapper.toUserDtos(me.getFollowers());
+        return ResponseEntity.ok(followers);
+    }
 }
