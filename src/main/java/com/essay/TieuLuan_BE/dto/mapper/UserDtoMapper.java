@@ -42,6 +42,7 @@ public class UserDtoMapper {
         dto.setId(user.getId());
         dto.setFullName(user.getFullName());
         dto.setImage(user.getImage());
+        dto.setEmail(user.getEmail());
         return dto;
     }
 }

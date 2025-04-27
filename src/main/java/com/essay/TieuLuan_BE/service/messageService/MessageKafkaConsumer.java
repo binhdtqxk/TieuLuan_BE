@@ -16,9 +16,10 @@ public class MessageKafkaConsumer {
     @KafkaListener(topics = "message", groupId = "message-group")
     public void consume(DirectMessageDto dto){
         messagingTemplate.convertAndSendToUser(
-                dto.getRecipient().getId().toString(),
+                dto.getRecipient().getEmail(),
                 "/queue/message",
                 dto
         );
+        System.out.println("Sent message to websocket: "+dto);
     }
 }
