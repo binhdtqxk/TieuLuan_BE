@@ -28,6 +28,7 @@ public class TwitServiceImpl implements TwitService {
         twit.setReply(false);
         twit.setTwit(true);
         twit.setVideo(req.getVideo());
+        twit.setLocation(req.getLocation());
         return twitRepository.save(twit);
     }
 

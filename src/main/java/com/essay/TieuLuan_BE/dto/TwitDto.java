@@ -32,4 +32,6 @@ public class TwitDto {
     private List<Long> retwitUsersId;
 
     private List<TwitDto> replyTwits;
+
+    private String location;
 }
