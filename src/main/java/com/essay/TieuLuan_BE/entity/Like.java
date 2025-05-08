@@ -3,6 +3,9 @@ package com.essay.TieuLuan_BE.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Table(name = "likes")
@@ -16,4 +19,6 @@ public class Like {
 
     @ManyToOne
     private Twit twit;
+
+    private LocalDateTime createdAt;
 }

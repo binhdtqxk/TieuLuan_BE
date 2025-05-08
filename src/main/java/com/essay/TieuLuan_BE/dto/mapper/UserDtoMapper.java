@@ -20,6 +20,8 @@ public class UserDtoMapper {
         userDto.setFollowings(toUserDtos(user.getFollowing()));
         userDto.setLogin_with_google(user.isLogin_with_google());
         userDto.setLocation(user.getLocation());
+        userDto.setCreatedAt(user.getCreatedAt());
+        userDto.setRole(RoleDtoMapper.toRoleDto(user.getRole()));
 //        userDto.setVerified(true);
         return userDto;
     }

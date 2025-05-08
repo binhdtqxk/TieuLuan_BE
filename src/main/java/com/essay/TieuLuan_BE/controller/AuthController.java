@@ -1,6 +1,7 @@
 package com.essay.TieuLuan_BE.controller;
 
 import com.essay.TieuLuan_BE.config.JwtProvider;
+import com.essay.TieuLuan_BE.entity.Role;
 import com.essay.TieuLuan_BE.entity.User;
 import com.essay.TieuLuan_BE.entity.Varification;
 import com.essay.TieuLuan_BE.exception.UserException;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -56,10 +61,14 @@ public class AuthController {
         createdUser.setFullName(fullName);
         createdUser.setBirthDate(birthDate);
         createdUser.setVerification(new Varification());
+        Role userRole = new Role();
+        userRole.setRole("ROLE_USER");
+        createdUser.setRole(userRole);
 
         User savedUser = userRepository.save(createdUser);
         //Create auth spring security first and send it to SecurityContextHolder to handle it.
-        Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), password);
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_USER");
+        Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), password, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
         //Create jwt token and send back to client
         String token = jwtProvider.generateToken(auth);

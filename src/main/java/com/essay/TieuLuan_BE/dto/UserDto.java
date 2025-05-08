@@ -2,6 +2,7 @@ package com.essay.TieuLuan_BE.dto;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,5 +30,7 @@ public class UserDto {
 
     private boolean isVerified;
 
+    private RoleDto role;
 
+    private LocalDateTime createdAt;
 }
