@@ -1,8 +1,9 @@
 package com.essay.TieuLuan_BE.controller;
 
 import com.essay.TieuLuan_BE.config.JwtProvider;
+import com.essay.TieuLuan_BE.entity.Role;
 import com.essay.TieuLuan_BE.entity.User;
-import com.essay.TieuLuan_BE.entity.Varification;
+import com.essay.TieuLuan_BE.entity.Verification;
 import com.essay.TieuLuan_BE.exception.UserException;
 import com.essay.TieuLuan_BE.repository.UserRepository;
 import com.essay.TieuLuan_BE.response.AuthResponse;
@@ -10,16 +11,21 @@ import com.essay.TieuLuan_BE.service.CustomUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -35,6 +41,9 @@ public class AuthController {
 
     @Autowired
     private CustomUserDetailsServiceImpl customUserDetails;
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @PostMapping("/signup") //Create new user
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws UserException {
@@ -55,11 +64,17 @@ public class AuthController {
         createdUser.setPassword(passwordEncoder.encode(password));
         createdUser.setFullName(fullName);
         createdUser.setBirthDate(birthDate);
-        createdUser.setVerification(new Varification());
+        createdUser.setVerification(new Verification());
+        Role userRole = new Role();
+        userRole.setRole("ROLE_USER");
+        userRole.setId(1);
+        createdUser.setRole(userRole);
+        createdUser.setCreatedAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(createdUser);
         //Create auth spring security first and send it to SecurityContextHolder to handle it.
-        Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), password);
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_USER");
+        Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), password, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
         //Create jwt token and send back to client
         String token = jwtProvider.generateToken(auth);
@@ -93,6 +108,25 @@ public class AuthController {
             throw new BadCredentialsException("Invalid username of password...");
         }
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+    @PostMapping("/sendVerificationCode")
+    public ResponseEntity<String> sendVerificationCode(@RequestBody String email) {
+        // Generate a random code
+        String code = generateRandomCode();
+
+        // Send the code to Kafka
+        kafkaTemplate.send("verificationCodeTopic", email, code);
+
+        return ResponseEntity.ok(code);
+    }
+    @PostMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmailExists(@RequestBody String email) {
+        User isEmailExist = userRepository.findByEmail(email);
+        return ResponseEntity.ok(isEmailExist != null);
+    }
+
+    private String generateRandomCode() {
+        return String.valueOf((int) (Math.random() * 1000000));
     }
 
 }

@@ -28,8 +28,8 @@ public class AppConfig {
         http.csrf(csrf -> csrf.disable())
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigrationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**")
-                        .authenticated()
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 ).sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
                 addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class);

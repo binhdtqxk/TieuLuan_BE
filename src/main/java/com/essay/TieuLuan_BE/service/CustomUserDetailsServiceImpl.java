@@ -5,6 +5,7 @@ import com.essay.TieuLuan_BE.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,7 +27,8 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
         if(user==null || user.isLogin_with_google()){
             throw new UsernameNotFoundException("username not found with email: "+username);
         }
-        List<GrantedAuthority> authorities = new ArrayList<>();
+        String role =user.getRole().getRole();
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(role);
         return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword(),authorities);
     }
 }

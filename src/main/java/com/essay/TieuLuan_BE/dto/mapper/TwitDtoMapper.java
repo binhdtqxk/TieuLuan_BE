@@ -34,6 +34,7 @@ public class TwitDtoMapper {
         twitDto.setRetwitUsersId(retwitUserId);
         twitDto.setReplyTwits(toTwitDtos(twit.getReplyTwits(),reqUser));
         twitDto.setVideo(twit.getVideo());
+        twitDto.setLocation(twit.getLocation());
 
         return twitDto;
     }
@@ -69,6 +70,7 @@ public class TwitDtoMapper {
         twitDto.setRetwit(isRetweeted);
         twitDto.setRetwitUsersId(retwitUserId);
         twitDto.setVideo(twit.getVideo());
+        twitDto.setLocation(twit.getLocation());
 
         return twitDto;
     }

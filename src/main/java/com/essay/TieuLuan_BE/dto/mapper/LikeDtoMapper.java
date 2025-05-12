@@ -19,8 +19,7 @@ public class LikeDtoMapper {
         likeDto.setId(like.getId());
         likeDto.setTwit(twit);
         likeDto.setUser(user);
-
-
+        likeDto.setCreatedAt(like.getCreatedAt());
         return likeDto;
     }
     public static List<LikeDto> toLikeDtos(List<Like> likes, User reqUser){
@@ -33,6 +32,7 @@ public class LikeDtoMapper {
             likeDto.setId(like.getId());
             likeDto.setTwit(twit);
             likeDto.setUser(user);
+            likeDto.setCreatedAt(like.getCreatedAt());
             likeDtos.add(likeDto);
         }
         return likeDtos;

@@ -1,7 +1,9 @@
 package com.essay.TieuLuan_BE.service.messageService;
 
 import com.essay.TieuLuan_BE.dto.DirectMessageDto;
+import com.essay.TieuLuan_BE.dto.UserDto;
 import com.essay.TieuLuan_BE.dto.mapper.DirectMessageDtoMapper;
+import com.essay.TieuLuan_BE.dto.mapper.UserDtoMapper;
 import com.essay.TieuLuan_BE.entity.DirectMessage;
 import com.essay.TieuLuan_BE.entity.User;
 import com.essay.TieuLuan_BE.repository.DirectMessageRepository;
@@ -44,13 +46,13 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Long> listConversationPartners(User me) {
+    public List<UserDto> listConversationPartners(User me) {
         List<DirectMessage> all = dmRepo.findBySenderOrRecipientOrderByCreatedAtDesc(me, me);
-        LinkedHashSet<Long> partners = new LinkedHashSet<>(); //use linkedHashSet to ensure that all partner in order and unique
+        LinkedHashSet<UserDto> partners = new LinkedHashSet<>(); //use linkedHashSet to ensure that all partner in order and unique
         for (DirectMessage m : all) {
-            Long other = m.getSender().equals(me)
-                    ? m.getRecipient().getId()
-                    : m.getSender().getId();
+            UserDto other = m.getSender().equals(me)
+                    ? UserDtoMapper.toUserSummaryDto(m.getRecipient())
+                    : UserDtoMapper.toUserSummaryDto(m.getSender());
             partners.add(other);
         }
         return new ArrayList<>(partners);

@@ -37,4 +37,5 @@ public class Twit {
     private boolean isReply;
     private boolean isTwit;
     private LocalDateTime createdAt;
+    private String Location;
 }

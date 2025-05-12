@@ -36,7 +36,7 @@ public class User {
     private List<Like> likes=new ArrayList<>();
 
     @Embedded
-    private Varification verification;
+    private Verification verification;
 
     @JsonIgnore
     @ManyToMany
@@ -45,5 +45,11 @@ public class User {
     @JsonIgnore
     @ManyToMany
     private List<User> following=new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    private Role role;
+
+    private LocalDateTime createdAt;
 }
 //+84

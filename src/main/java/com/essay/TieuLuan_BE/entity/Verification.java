@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class Varification {
+public class Verification {
 
     private boolean status=false;
     private LocalDateTime startedAt;

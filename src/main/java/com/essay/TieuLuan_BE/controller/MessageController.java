@@ -1,6 +1,7 @@
 package com.essay.TieuLuan_BE.controller;
 
 import com.essay.TieuLuan_BE.dto.DirectMessageDto;
+import com.essay.TieuLuan_BE.dto.UserDto;
 import com.essay.TieuLuan_BE.entity.User;
 import com.essay.TieuLuan_BE.exception.UserException;
 import com.essay.TieuLuan_BE.request.MessageRequest;
@@ -36,7 +37,7 @@ public class MessageController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Long>> listPartners(@RequestHeader("Authorization") String jwt) throws UserException {
+    public ResponseEntity<List<UserDto>> listPartners(@RequestHeader("Authorization") String jwt) throws UserException {
         User me = userService.findUserProfileByJwt(jwt);
         return ResponseEntity.ok(messageService.listConversationPartners(me));
     }

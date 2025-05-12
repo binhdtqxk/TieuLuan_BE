@@ -12,6 +12,8 @@ import com.essay.TieuLuan_BE.repository.TwitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,6 +40,7 @@ public class LikeServiceImpl implements LikeService{
         Like like=new Like();
         like.setTwit(twit);
         like.setUser(user);
+        like.setCreatedAt(LocalDateTime.now());
         Like savedLike = likeRepository.save(like);
         twit.getLikes().add(savedLike);
         twitRepository.save(twit);
