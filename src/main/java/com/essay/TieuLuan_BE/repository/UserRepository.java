@@ -1,6 +1,7 @@
 package com.essay.TieuLuan_BE.repository;
 
 import com.essay.TieuLuan_BE.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     public List<User> searchUser(@Param("query")String query);
 
     public Long countByCreatedAtAfter(LocalDateTime startDate);
+    public List<User> findByFullNameContainingOrEmailContaining(String fullNameQuery, String emailQuery, Pageable pageable);
+    public Long countByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
 }

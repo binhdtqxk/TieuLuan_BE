@@ -29,4 +29,12 @@ public interface TwitRepository extends JpaRepository<Twit, Long> {
     Long countByIsTwitFalseAndIsReplyFalseAndCreatedAtAfter(LocalDateTime startDate);
 
     Long countByIsReplyTrueAndCreatedAtAfter(LocalDateTime startDate);
+
+    Long countByIsTwitTrueAndCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    List<Twit> findByCreatedAtAfter(LocalDateTime startDate);
+
+    Long countByIsTwitFalseAndIsReplyFalseAndCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    Long countByIsReplyTrueAndCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
 }

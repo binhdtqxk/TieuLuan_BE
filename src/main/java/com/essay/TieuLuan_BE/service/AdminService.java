@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface AdminService {
 
-    DashboardAnalyticsDto getDashboardAnalytics(TimeRange timeRange);
+    DashboardAnalyticsDto getDashboardAnalytics();
 
-    TweetAnalyticsDto getTweetAnalytics(TimeRange timeRange);
+    TweetAnalyticsDto getTweetAnalytics();
 
-    LikeAnalyticsDto getLikeAnalytics(TimeRange timeRange);
+    LikeAnalyticsDto getLikeAnalytics();
 
-    UserAnalyticsDto getUserAnalytics(TimeRange timeRange);
+    UserAnalyticsDto getUserAnalytics();
 
     List<UserDto> getAllUsers(String query, int page, int size);
 

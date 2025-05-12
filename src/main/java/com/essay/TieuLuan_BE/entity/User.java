@@ -36,7 +36,7 @@ public class User {
     private List<Like> likes=new ArrayList<>();
 
     @Embedded
-    private Varification verification;
+    private Verification verification;
 
     @JsonIgnore
     @ManyToMany

@@ -76,4 +76,5 @@ public class UserController {
         List<UserDto> followers = UserDtoMapper.toUserDtos(me.getFollowers());
         return ResponseEntity.ok(followers);
     }
+
 }
