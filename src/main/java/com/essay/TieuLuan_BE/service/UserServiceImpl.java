@@ -4,13 +4,18 @@ import com.essay.TieuLuan_BE.config.JwtProvider;
 import com.essay.TieuLuan_BE.entity.User;
 import com.essay.TieuLuan_BE.exception.UserException;
 import com.essay.TieuLuan_BE.repository.UserRepository;
+import com.essay.TieuLuan_BE.request.ChangePasswordRequest;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService{
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -78,5 +83,16 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<User> searchUser(String query) throws UserException {
         return userRepository.searchUser(query);
+    }
+
+    @Override
+    public User changePassword(Long userId, ChangePasswordRequest request) throws UserException, BadRequestException {
+        User user= findUserById(userId);
+        if(!passwordEncoder.matches(request.getCurrentPassword(),user.getPassword())){
+            throw new BadRequestException("Current password is not correct");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        return userRepository.save(user);
     }
 }
