@@ -54,11 +54,6 @@ public class AuthController {
         String fullName = user.getFullName();
         String birthDate = user.getBirthDate();
 
-        User isEmailExist = userRepository.findByEmail(email);
-        if (isEmailExist != null) {
-            throw new UserException("Email is already used with another account");
-        }
-
         User createdUser = new User();
         createdUser.setEmail(email);
         createdUser.setPassword(passwordEncoder.encode(password));
@@ -121,12 +116,20 @@ public class AuthController {
     }
     @PostMapping("/check-email")
     public ResponseEntity<Boolean> checkEmailExists(@RequestBody String email) {
-        User isEmailExist = userRepository.findByEmail(email);
-        return ResponseEntity.ok(isEmailExist != null);
+        boolean res = userRepository.findByEmail(email) != null;
+        return ResponseEntity.ok(res);
     }
 
     private String generateRandomCode() {
         return String.valueOf((int) (Math.random() * 1000000));
     }
-
+    @PostMapping("/sendNewPassword")
+    public ResponseEntity<HttpStatus> sendNewPassword(@RequestParam String email) {
+        String code = generateRandomPassword();
+        kafkaTemplate.send("newPasswordTopic", email, code);
+        return ResponseEntity.ok(HttpStatus.CREATED);
+    }
+    private String generateRandomPassword() {
+        return String.valueOf((int) (Math.random() * 100000000));
+    }
 }
