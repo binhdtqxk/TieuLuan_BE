@@ -30,7 +30,7 @@ public class LikeServiceImpl implements LikeService{
     //Like specific twit by specific user
     @Override
     public Like likeTwit(Long twitId, User user) throws UserException, TwitException {
-        System.out.println("bat dau vao liketwit");
+//        System.out.println("bat dau vao liketwit");
         Like islikeExist = likeRepository.isLikeExist(user.getId(), twitId);
         if (islikeExist != null) {
             likeRepository.deleteById(islikeExist.getId()); //if user already likes it then unlike
@@ -45,10 +45,10 @@ public class LikeServiceImpl implements LikeService{
         twit.getLikes().add(savedLike);
         twitRepository.save(twit);
         if(!Objects.equals(twit.getUser().getId(), user.getId())){
-            System.out.println("bat dau tao ");
+//            System.out.println("bat dau tao ");
             User recipient=twit.getUser();
             notificationService.sendNotification(NotificationType.LIKE, user,recipient,twit);
-            System.out.println("gui xong");
+//            System.out.println("gui xong");
         }
         return savedLike;
     }

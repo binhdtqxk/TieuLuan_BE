@@ -22,13 +22,12 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-  #
-  kafka-2:
+  kafka-test:
     image: confluentinc/cp-kafka
     depends_on:
       - zookeeper
     ports:
-      - 9093:9093
+      - "9093:9093"
     restart: "on-failure"
     environment:
       KAFKA_BROKER_ID: 2
@@ -38,17 +37,11 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  kafka-3:
-    image: confluentinc/cp-kafka
-    depends_on:
-      - zookeeper
+  mysql-test:
+    container_name: mysql-test
+    image: mysql:8
     ports:
-      - 9094:9094
-    restart: "on-failure"
+      - "3307:3306"
     environment:
-      KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9094
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      MYSQL_DATABASE: socialmedia_test
+      MYSQL_ROOT_PASSWORD: thanhbinh123
