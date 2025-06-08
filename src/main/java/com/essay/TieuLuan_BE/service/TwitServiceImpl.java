@@ -6,16 +6,23 @@ import com.essay.TieuLuan_BE.exception.TwitException;
 import com.essay.TieuLuan_BE.exception.UserException;
 import com.essay.TieuLuan_BE.repository.TwitRepository;
 import com.essay.TieuLuan_BE.request.TwitReplyRequest;
+import com.essay.TieuLuan_BE.service.notificationService.NotificationService;
+import com.essay.TieuLuan_BE.service.notificationService.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+
 @Service
 public class TwitServiceImpl implements TwitService {
 
     @Autowired
     private TwitRepository twitRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     //Post twit
     @Override
@@ -46,6 +53,12 @@ public class TwitServiceImpl implements TwitService {
             twit.getRetwitUser().remove(user);
         }else{
             twit.getRetwitUser().add(user);
+            if(!Objects.equals(twit.getUser().getId(), user.getId())){
+//            System.out.println("bat dau tao ");
+                User recipient=twit.getUser();
+                notificationService.sendNotification(NotificationType.RETWIT, user,recipient,twit);
+//            System.out.println("gui xong");
+            }
         }
         return twitRepository.save(twit);
     }
@@ -90,6 +103,12 @@ public class TwitServiceImpl implements TwitService {
 
         Twit saveReply = twitRepository.save(twit);
         OGTwit.getReplyTwits().add(saveReply);
+        if(!Objects.equals(twit.getUser().getId(), user.getId())){
+//            System.out.println("bat dau tao ");
+            User recipient=twit.getUser();
+            notificationService.sendNotification(NotificationType.REPLY, user,recipient,twit);
+//            System.out.println("gui xong");
+        }
         twitRepository.save(OGTwit);
         return OGTwit;
     }
