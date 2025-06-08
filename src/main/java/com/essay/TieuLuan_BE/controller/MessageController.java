@@ -31,7 +31,7 @@ public class MessageController {
     ) throws UserException {
         User me = userService.findUserProfileByJwt(jwt);
         DirectMessageDto dto = messageService.sendMessage(
-                me.getId(), recipientId, body.getContent(), body.getImageUrl()
+                me, recipientId, body.getContent(), body.getImageUrl()
         );
         return ResponseEntity.ok(dto);
     }

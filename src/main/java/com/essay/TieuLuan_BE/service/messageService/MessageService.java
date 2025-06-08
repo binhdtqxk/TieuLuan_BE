@@ -7,7 +7,7 @@ import com.essay.TieuLuan_BE.entity.User;
 import java.util.List;
 
 public interface MessageService {
-    DirectMessageDto sendMessage(Long senderId, Long recipientId, String content, String imageUrl);
+    DirectMessageDto sendMessage(User sender, Long recipientId, String content, String imageUrl);
     //Get list of users that had a conversion with req_user before
     List<UserDto> listConversationPartners(User me);
     //Get conversion with specify user

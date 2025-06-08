@@ -24,6 +24,8 @@ public interface TwitService {
 
     public List<Twit> findByLikesContains(User user) throws UserException;
 
+    public List<Twit> findRepliedByUser(User user) throws UserException;
+
 
 
 

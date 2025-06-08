@@ -4,11 +4,14 @@ import com.essay.TieuLuan_BE.dto.UserDto;
 import com.essay.TieuLuan_BE.dto.mapper.UserDtoMapper;
 import com.essay.TieuLuan_BE.entity.User;
 import com.essay.TieuLuan_BE.exception.UserException;
+import com.essay.TieuLuan_BE.request.ChangePasswordRequest;
 import com.essay.TieuLuan_BE.service.UserService;
 import com.essay.TieuLuan_BE.util.util.UserUtil;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
@@ -75,6 +79,13 @@ public class UserController {
         User me = userService.findUserProfileByJwt(jwt);
         List<UserDto> followers = UserDtoMapper.toUserDtos(me.getFollowers());
         return ResponseEntity.ok(followers);
+    }
+    @PutMapping("/password")
+    public ResponseEntity<UserDto> changePassword(@RequestBody ChangePasswordRequest req,@RequestHeader("Authorization")String jwt) throws UserException, BadRequestException {
+        User reqUser= userService.findUserProfileByJwt(jwt);
+        User user= userService.changePassword(reqUser.getId(),req);
+        UserDto userDto= UserDtoMapper.toUserDto(user);
+        return new ResponseEntity<>(userDto, HttpStatus.ACCEPTED);
     }
 
 }

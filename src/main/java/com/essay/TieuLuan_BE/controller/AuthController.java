@@ -9,6 +9,7 @@ import com.essay.TieuLuan_BE.repository.UserRepository;
 import com.essay.TieuLuan_BE.response.AuthResponse;
 import com.essay.TieuLuan_BE.service.CustomUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -44,6 +45,8 @@ public class AuthController {
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
+    @Autowired
+    private KafkaProperties kafkaProperties;
 
     @PostMapping("/signup") //Create new user
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws UserException {
@@ -53,10 +56,8 @@ public class AuthController {
         String password = user.getPassword();
         String fullName = user.getFullName();
         String birthDate = user.getBirthDate();
-
-        User isEmailExist = userRepository.findByEmail(email);
-        if (isEmailExist != null) {
-            throw new UserException("Email is already used with another account");
+        if(checkEmail(email)){
+            throw new UserException("Email is already in use");
         }
 
         User createdUser = new User();
@@ -111,6 +112,9 @@ public class AuthController {
     }
     @PostMapping("/sendVerificationCode")
     public ResponseEntity<String> sendVerificationCode(@RequestBody String email) {
+        System.out.println("nhan dc request");
+        System.out.println("Kafka consumer config: " + kafkaProperties.getConsumer());
+        System.out.println("Kafka bootstrap servers: " + kafkaProperties.getBootstrapServers());
         // Generate a random code
         String code = generateRandomCode();
 
@@ -121,12 +125,24 @@ public class AuthController {
     }
     @PostMapping("/check-email")
     public ResponseEntity<Boolean> checkEmailExists(@RequestBody String email) {
-        User isEmailExist = userRepository.findByEmail(email);
-        return ResponseEntity.ok(isEmailExist != null);
+        boolean res=checkEmail(email);
+        return ResponseEntity.ok(res);
     }
 
     private String generateRandomCode() {
         return String.valueOf((int) (Math.random() * 1000000));
     }
-
+    @PostMapping("/sendNewPassword")
+    public ResponseEntity<HttpStatus> sendNewPassword(@RequestParam String email) {
+        String code = generateRandomPassword();
+        kafkaTemplate.send("newPasswordTopic", email, code);
+        return ResponseEntity.ok(HttpStatus.CREATED);
+    }
+    private String generateRandomPassword() {
+        return String.valueOf((int) (Math.random() * 100000000));
+    }
+    private boolean checkEmail(String email){
+        boolean res = userRepository.findByEmail(email) != null;
+        return res;
+    }
 }

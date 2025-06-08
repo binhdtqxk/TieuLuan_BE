@@ -24,14 +24,12 @@ import javax.crypto.SecretKey;
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic","/queue");
         config.setApplicationDestinationPrefixes("/app");
         config.setUserDestinationPrefix("/user");
     }
-
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
@@ -43,13 +41,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
                 StompHeaderAccessor accessor =
                         MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-
                 if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    // Lấy header Authorization
+
                     String rawToken = accessor.getFirstNativeHeader(JwtConstant.JWT_HEADER);
                     if (rawToken != null && rawToken.startsWith("Bearer ")) {
                         try {
-                            // Validate và parse claims
                             String token = rawToken.substring(7);
                             SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
                             Claims claims = Jwts.parser()
@@ -57,20 +53,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                                     .build()
                                     .parseClaimsJws(token)
                                     .getBody();
-
-                            // Lấy email (username) và authorities từ claims (nếu có)
                             String email = claims.get("email", String.class);
-                            // nếu bạn lưu roles trong claim "authorities":
                             String auths = claims.get("authorities", String.class);
                             var authorities = AuthorityUtils
                                     .commaSeparatedStringToAuthorityList(auths == null ? "" : auths);
-
-                            // Tạo Authentication và gán làm Principal
                             Authentication user =
                                     new UsernamePasswordAuthenticationToken(email, null, authorities);
                             accessor.setUser(user);
                         } catch (Exception ex) {
-                            // token không hợp lệ => bỏ connect
                             throw new IllegalArgumentException("Invalid STOMP JWT");
                         }
                     }

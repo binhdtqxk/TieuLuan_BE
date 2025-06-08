@@ -28,9 +28,8 @@ public class MessageServiceImpl implements MessageService {
     @Autowired private KafkaTemplate<String, DirectMessageDto> kafkaTemplate;
 
     @Override
-    public DirectMessageDto sendMessage(Long senderId, Long recipientId, String content, String imageUrl) {
-        User sender = userRepo.findById(senderId).orElseThrow();
-        User recipient = userRepo.findById(recipientId).orElseThrow();
+    public DirectMessageDto sendMessage(User sender, Long recipientId, String content, String imageUrl) {
+        User recipient = userRepo.findById(recipientId).orElseThrow(() -> new RuntimeException("recipient not found"));
 
         DirectMessage dm = new DirectMessage();
         dm.setSender(sender);

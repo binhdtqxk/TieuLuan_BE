@@ -41,7 +41,7 @@ public class GMailer {
             throws IOException {
 
         GoogleClientSecrets clientSecrets =
-                GoogleClientSecrets.load(jsonFactory, new InputStreamReader(GMailer.class.getResourceAsStream("/client_secret_835954791698-9uvq1qnmhgi66hjpsoah56oelq7ttbrf.apps.googleusercontent.com.json")));
+                GoogleClientSecrets.load(jsonFactory, new InputStreamReader(GMailer.class.getResourceAsStream("/client_secret_835954791698-9df5so44ci7te4b90ivuv2algl1k37oc.apps.googleusercontent.com.json")));
 
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
@@ -90,4 +90,8 @@ public class GMailer {
         }
     }
 
+    public static void main(String[] args) throws Exception {
+        GMailer test= new GMailer();
+        test.sendMail("a","phanthanhbinhdt@gmail.com");
+    }
 }

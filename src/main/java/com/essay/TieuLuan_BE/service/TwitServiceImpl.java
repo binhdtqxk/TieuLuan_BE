@@ -103,4 +103,9 @@ public class TwitServiceImpl implements TwitService {
     public List<Twit> findByLikesContains(User user) throws UserException {
         return twitRepository.findByLikesUser_id(user.getId());
     }
+
+    @Override
+    public List<Twit> findRepliedByUser(User user) throws UserException {
+        return twitRepository.findByIs_replyUser_id(user.getId());
+    }
 }
