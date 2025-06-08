@@ -20,6 +20,6 @@ public class MessageKafkaConsumer {
                 "/queue/message",
                 dto
         );
-        System.out.println("Sent message to websocket: "+dto);
+//        System.out.println("Sent message to websocket: "+dto);
     }
 }

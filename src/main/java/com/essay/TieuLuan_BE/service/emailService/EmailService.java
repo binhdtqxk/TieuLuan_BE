@@ -18,7 +18,7 @@ public class EmailService {
     GMailer gMailer;
     @KafkaListener(topics = "verificationCodeTopic", groupId = "emailGroup")
     public void listenForVerificationCode(ConsumerRecord<String, String> record) throws Exception {
-        System.out.println("da nhan dc message");
+//        System.out.println("da nhan dc message");
         String email = record.key();
         String code = record.value();
         sendEmailWithCode(email, code);
@@ -37,7 +37,7 @@ public class EmailService {
         userRepository.save(user);
     }
     private void sendEmailWithCode(String email, String code) throws Exception {
-        System.out.println("da gui message");
+//        System.out.println("da gui message");
         String msg= "your verification code is " + code;
         gMailer.sendMail(msg,email);
     }

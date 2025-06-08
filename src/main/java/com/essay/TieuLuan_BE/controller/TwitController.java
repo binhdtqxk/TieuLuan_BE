@@ -94,7 +94,7 @@ public class TwitController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<TwitDto>> getUsersAllTwits(@PathVariable Long userId, @RequestHeader("Authorization") String jwt) throws UserException, TwitException{
-        User user = userService.findUserProfileByJwt(jwt);
+        User user = userService.findUserById(userId);
 
         List<Twit> twits= twitService.getUserTwit(user);
 
@@ -105,13 +105,20 @@ public class TwitController {
 
     @GetMapping("/user/{userId}/likes")
     public ResponseEntity<List<TwitDto>> findTwitByLikesContainsUser(@PathVariable Long userId, @RequestHeader("Authorization") String jwt) throws UserException, TwitException{
-        User user = userService.findUserProfileByJwt(jwt);
+        User user = userService.findUserById(userId);
 
         List<Twit> twits= twitService.findByLikesContains(user);
 
         List<TwitDto> twitDtos= TwitDtoMapper.toTwitDtos(twits,user);
 
         return new ResponseEntity<>(twitDtos, HttpStatus.OK);
+    }
+    @GetMapping("/user/{userId}/replied")
+    public ResponseEntity<List<TwitDto>> findTwitRepliedByUser(@PathVariable Long userId, @RequestHeader("Authorization") String jwt) throws UserException, TwitException{
+        User user = userService.findUserProfileByJwt(jwt);
+        List<Twit> twits= twitService.findRepliedByUser(user);
+        List<TwitDto> twitDtos= TwitDtoMapper.toTwitDtos(twits,user);
+        return new ResponseEntity<>(twitDtos,HttpStatus.OK);
     }
 
 

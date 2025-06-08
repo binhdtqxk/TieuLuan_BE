@@ -34,7 +34,6 @@ public class AdminServiceImpl implements AdminService {
     public DashboardAnalyticsDto getDashboardAnalytics() {
         LocalDateTime startDate = getMonthStartDate();
 
-        // Get basic counts
         long totalUsers = userRepository.count();
         long newUsers = userRepository.countByCreatedAtAfter(startDate);
         long totalTweets = twitRepository.count();
@@ -42,13 +41,11 @@ public class AdminServiceImpl implements AdminService {
         long totalRetweets = twitRepository.countByIsTwitFalseAndIsReplyFalse();
         long totalReplies = twitRepository.countByIsReplyTrue();
 
-        // Prepare user growth chart
         List<String> weekLabels = ChartDataDtoMapper.generateWeeklyLabels();
         List<Number> userCounts = getUserCountsForMonth();
         ChartDataDto userGrowthChart = ChartDataDtoMapper.createTimeSeriesChart(
                 weekLabels, "New Users", userCounts);
 
-        // Prepare activity chart
         List<String> activityLabels = weekLabels;
         List<String> seriesNames = Arrays.asList("Tweets", "Likes");
         List<List<Number>> seriesData = Arrays.asList(
@@ -71,7 +68,6 @@ public class AdminServiceImpl implements AdminService {
         long totalRetweets = twitRepository.countByIsTwitFalseAndIsReplyFalseAndCreatedAtAfter(startDate);
         long totalReplies = twitRepository.countByIsReplyTrueAndCreatedAtAfter(startDate);
 
-        // Prepare tweets over time chart
         List<String> weekLabels = ChartDataDtoMapper.generateWeeklyLabels();
         List<String> seriesNames = Arrays.asList("Original Tweets", "Replies");
         List<List<Number>> seriesData = Arrays.asList(
@@ -81,7 +77,6 @@ public class AdminServiceImpl implements AdminService {
         ChartDataDto tweetsOverTimeChart = ChartDataDtoMapper.createMultiSeriesChart(
                 weekLabels, seriesNames, seriesData);
 
-        // Get top tweeters
         Map<User, Long> topTweeters = getTopTweeters(startDate);
         ChartDataDto topTweetersChart = TweetAnalyticsDtoMapper.createTopTweetersChart(topTweeters);
 
@@ -95,17 +90,14 @@ public class AdminServiceImpl implements AdminService {
 
         long totalLikes = likeRepository.countByCreatedAtAfter(startDate);
 
-        // Prepare likes over time chart
         List<String> weekLabels = ChartDataDtoMapper.generateWeeklyLabels();
         List<Number> likeCounts = getLikeCountsForMonth();
         ChartDataDto likesOverTimeChart = ChartDataDtoMapper.createTimeSeriesChart(
                 weekLabels, "Likes", likeCounts);
 
-        // Get most liked tweets
         Map<Twit, Long> mostLikedTweets = getMostLikedTweets(startDate);
         ChartDataDto mostLikedTweetsChart = LikeAnalyticsDtoMapper.createMostLikedTweetsChart(mostLikedTweets);
 
-        // Get most active likers
         Map<User, Long> mostActiveLikers = getMostActiveLikers(startDate);
         ChartDataDto mostActiveLikersChart = LikeAnalyticsDtoMapper.createMostActiveLikersChart(mostActiveLikers);
 
@@ -121,18 +113,15 @@ public class AdminServiceImpl implements AdminService {
         long newUsers = userRepository.countByCreatedAtAfter(startDate);
         long activeUsers = getActiveUserCount(startDate);
 
-        // Prepare user growth chart
         List<String> weekLabels = ChartDataDtoMapper.generateWeeklyLabels();
         List<Number> userCounts = getUserCountsForMonth();
         ChartDataDto userGrowthChart = ChartDataDtoMapper.createTimeSeriesChart(
                 weekLabels, "New Users", userCounts);
 
-        // Prepare user activity chart
         List<Number> activeUserCounts = getActiveUserCountsForMonth();
         ChartDataDto userActivityChart = ChartDataDtoMapper.createTimeSeriesChart(
                 weekLabels, "Active Users", activeUserCounts);
 
-        // Get most followed users
         Map<User, Integer> mostFollowedUsers = getMostFollowedUsers();
         ChartDataDto mostFollowedUsersChart = UserAnalyticsDtoMapper.createMostFollowedUsersChart(mostFollowedUsers);
 
@@ -161,7 +150,6 @@ public class AdminServiceImpl implements AdminService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Mark user as banned using the verification field
         if (user.getVerification() == null) {
             user.setVerification(new Verification());
         }
@@ -179,7 +167,6 @@ public class AdminServiceImpl implements AdminService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Reset ban status
         if (user.getVerification() != null) {
             user.getVerification().setStatus(true);
             user.getVerification().setPlanType(null);
@@ -200,35 +187,30 @@ public class AdminServiceImpl implements AdminService {
         LocalDateTime monthStart = getMonthStartDate();
         List<Number> counts = new ArrayList<>();
 
-        // Generate weekly counts for the current month
         for (int i = 0; i < 4; i++) {
-            //get i week of current month (i=0 => first week)
             LocalDateTime weekStart = monthStart.plusWeeks(i);
             LocalDateTime weekEnd = weekStart.plusWeeks(1);
 
-            // Cap the end date to now
             if (weekEnd.isAfter(now)) {
                 weekEnd = now;
             }
-            // user created in the i week
+
             long count = userRepository.countByCreatedAtBetween(weekStart, weekEnd);
             counts.add(count);
         }
 
         return counts;
     }
-//Get tweet count for all week in month
+
     private List<Number> getTweetCountsForMonth() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime monthStart = getMonthStartDate();
         List<Number> counts = new ArrayList<>();
 
-        // Generate weekly counts for the current month
         for (int i = 0; i < 4; i++) {
             LocalDateTime weekStart = monthStart.plusWeeks(i);
             LocalDateTime weekEnd = weekStart.plusWeeks(1);
 
-            // Cap the end date to now
             if (weekEnd.isAfter(now)) {
                 weekEnd = now;
             }
@@ -246,12 +228,10 @@ public class AdminServiceImpl implements AdminService {
         LocalDateTime monthStart = getMonthStartDate();
         List<Number> counts = new ArrayList<>();
 
-        // Generate weekly counts for the current month
         for (int i = 0; i < 4; i++) {
             LocalDateTime weekStart = monthStart.plusWeeks(i);
             LocalDateTime weekEnd = weekStart.plusWeeks(1);
 
-            // Cap the end date to now
             if (weekEnd.isAfter(now)) {
                 weekEnd = now;
             }
@@ -268,12 +248,10 @@ public class AdminServiceImpl implements AdminService {
         LocalDateTime monthStart = getMonthStartDate();
         List<Number> counts = new ArrayList<>();
 
-        // Generate weekly counts for the current month
         for (int i = 0; i < 4; i++) {
             LocalDateTime weekStart = monthStart.plusWeeks(i);
             LocalDateTime weekEnd = weekStart.plusWeeks(1);
 
-            // Cap the end date to now
             if (weekEnd.isAfter(now)) {
                 weekEnd = now;
             }
@@ -286,7 +264,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private List<Number> getActiveUserCountsForMonth() {
-        // This is a placeholder - implement with actual repository methods
         return Arrays.asList(35, 42, 38, 45);
     }
 
