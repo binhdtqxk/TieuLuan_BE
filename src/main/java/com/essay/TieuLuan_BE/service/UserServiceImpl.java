@@ -5,12 +5,15 @@ import com.essay.TieuLuan_BE.entity.User;
 import com.essay.TieuLuan_BE.exception.UserException;
 import com.essay.TieuLuan_BE.repository.UserRepository;
 import com.essay.TieuLuan_BE.request.ChangePasswordRequest;
+import com.essay.TieuLuan_BE.service.notificationService.NotificationService;
+import com.essay.TieuLuan_BE.service.notificationService.NotificationType;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -20,6 +23,8 @@ public class UserServiceImpl implements UserService{
     UserRepository userRepository;
     @Autowired
     JwtProvider jwtProvider;
+    @Autowired
+    NotificationService notificationService;
     @Override
     public User findUserById(Long userId) throws UserException {
         User user= userRepository.findById(userId)
@@ -74,6 +79,11 @@ public class UserServiceImpl implements UserService{
         }else{
             user.getFollowing().add(followToUser);
             followToUser.getFollowers().add(user);
+        }
+        if(userId==user.getId()){
+//            System.out.println("bat dau tao ");
+            notificationService.sendNotification(NotificationType.FOLLOW, user,followToUser,null);
+//            System.out.println("gui xong");
         }
         userRepository.save(followToUser);
         userRepository.save(user);

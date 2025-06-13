@@ -22,7 +22,7 @@ public class UserDtoMapper {
         userDto.setLocation(user.getLocation());
         userDto.setCreatedAt(user.getCreatedAt());
         userDto.setRole(RoleDtoMapper.toRoleDto(user.getRole()));
-//        userDto.setVerified(true);
+        userDto.setVerification(VerificationDtoMapper.toVerificationDto(user.getVerification()));
         return userDto;
     }
     public static List<UserDto> toUserDtos(List<User> users) {

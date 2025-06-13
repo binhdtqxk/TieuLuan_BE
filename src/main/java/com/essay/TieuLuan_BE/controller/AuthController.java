@@ -6,9 +6,18 @@ import com.essay.TieuLuan_BE.entity.User;
 import com.essay.TieuLuan_BE.entity.Verification;
 import com.essay.TieuLuan_BE.exception.UserException;
 import com.essay.TieuLuan_BE.repository.UserRepository;
+import com.essay.TieuLuan_BE.request.GoogleCredentialRequest;
 import com.essay.TieuLuan_BE.response.AuthResponse;
 import com.essay.TieuLuan_BE.service.CustomUserDetailsServiceImpl;
+import com.essay.TieuLuan_BE.service.UserService;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import jakarta.servlet.http.HttpServletResponse;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +27,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +59,12 @@ public class AuthController {
     private KafkaTemplate<String, String> kafkaTemplate;
     @Autowired
     private KafkaProperties kafkaProperties;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String googleClientId;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/signup") //Create new user
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws UserException {
@@ -93,7 +111,10 @@ public class AuthController {
         Authentication authentication = authenticate(username, password);
         //Tạo jwt token
         String token = jwtProvider.generateToken(authentication);
-
+        User use = userRepository.findByEmail(username);
+        if(!use.getVerification().isStatus()){
+            throw new UserException("User has been banned");
+        }
         AuthResponse authResponse = new AuthResponse(token, true);
         //Return token to client for validate further
         return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.ACCEPTED);
@@ -108,6 +129,7 @@ public class AuthController {
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid username of password...");
         }
+
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
     @PostMapping("/sendVerificationCode")
@@ -143,6 +165,64 @@ public class AuthController {
     }
     private boolean checkEmail(String email){
         boolean res = userRepository.findByEmail(email) != null;
+        System.out.println("email: "+email );
+        System.out.println("Res: "+res);
         return res;
+    }
+    @PostMapping("/google")
+    public ResponseEntity<AuthResponse> handleGoogleCredential(@RequestBody GoogleCredentialRequest request) {
+        try {
+            // Xác thực Google ID token
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance())
+                    .setAudience(Collections.singletonList(googleClientId))
+                    .build();
+            GoogleIdToken idToken = verifier.verify(request.getCredential());
+            if (idToken == null) {
+                throw new IllegalArgumentException("Invalid Google ID token");
+            }
+
+            // Lấy thông tin người dùng từ token
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            String email = payload.getEmail();
+            String fullName = (String) payload.get("name"); // Lấy tên từ Google
+
+            // Kiểm tra xem người dùng đã tồn tại chưa
+            User user = userRepository.findByEmail(email);
+            if (user == null) {
+                user = new User();
+                user.setEmail(email);
+                user.setFullName(fullName != null ? fullName : "Google User");
+                user.setLogin_with_google(true);
+                user.setVerification(new Verification());
+                Role userRole = new Role();
+                userRole.setRole("ROLE_USER");
+                userRole.setId(1);
+                user.setRole(userRole);
+                user.setCreatedAt(LocalDateTime.now());
+                userRepository.save(user);
+            }
+
+            // Tạo Authentication
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    email,
+                    null,
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+            );
+
+            // Tạo JWT
+            String jwt = jwtProvider.generateToken(authentication);
+            if(!user.getVerification().isStatus()){
+                throw new UserException("User has been banned");
+            }
+            AuthResponse authResponse = new AuthResponse(jwt, true);
+            return new ResponseEntity<>(authResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new RuntimeException("Google authentication failed: " + e.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        AuthController test= new AuthController();
+        System.out.println(test.checkEmail("phanthanhbinh2003@gmail.com"));;
     }
 }

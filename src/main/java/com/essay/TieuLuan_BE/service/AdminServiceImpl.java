@@ -12,6 +12,7 @@ import com.essay.TieuLuan_BE.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 
@@ -29,6 +30,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private LikeRepository likeRepository;
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
     public DashboardAnalyticsDto getDashboardAnalytics() {
@@ -159,6 +163,7 @@ public class AdminServiceImpl implements AdminService {
         user.getVerification().setStartedAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
+        kafkaTemplate.send("banTopic", user.getEmail(), "BANNED: " + reason);
         return UserDtoMapper.toUserDto(savedUser);
     }
 
