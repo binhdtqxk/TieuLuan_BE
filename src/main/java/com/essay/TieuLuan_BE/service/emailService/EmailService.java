@@ -29,6 +29,12 @@ public class EmailService {
         String password = record.value();
         sendEmailWithNewPassword(email, password);
     }
+    @KafkaListener(topics = "banTopic", groupId = "emailGroup")
+    public void listenForBanTopic(ConsumerRecord<String, String> record) throws Exception {
+        String email = record.key();
+        String reason = record.value();
+        sendEmailWithReason(email, reason);
+    }
     private void sendEmailWithNewPassword(String email, String password) throws Exception {
         String msg= "your new password is: " + password;
         gMailer.sendMail(msg,email);
@@ -39,6 +45,15 @@ public class EmailService {
     private void sendEmailWithCode(String email, String code) throws Exception {
 //        System.out.println("da gui message");
         String msg= "your verification code is " + code;
+        gMailer.sendMail(msg,email);
+    }
+    private void sendEmailWithReason(String email, String reason) throws Exception {
+        String msg = "Dear User,\n\n" +
+                "We would like to inform you that your account has been updated with the following status change:\n\n" +
+                "Reason: " + reason + "\n\n" +
+                "If you have any questions or believe this action was made in error, please contact our support team.\n\n" +
+                "Best regards,\n" +
+                "The Support Team";
         gMailer.sendMail(msg,email);
     }
 }

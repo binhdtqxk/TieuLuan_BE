@@ -1,5 +1,6 @@
 package com.essay.TieuLuan_BE.dto;
 
+import com.essay.TieuLuan_BE.entity.Verification;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ public class UserDto {
 
     private boolean followed;//ReqUser is following this user or not
 
-    private boolean isVerified;
+    private VerificationDto verification;
 
     private RoleDto role;
 

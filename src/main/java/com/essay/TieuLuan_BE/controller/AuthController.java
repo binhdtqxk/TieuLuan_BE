@@ -9,11 +9,13 @@ import com.essay.TieuLuan_BE.repository.UserRepository;
 import com.essay.TieuLuan_BE.request.GoogleCredentialRequest;
 import com.essay.TieuLuan_BE.response.AuthResponse;
 import com.essay.TieuLuan_BE.service.CustomUserDetailsServiceImpl;
+import com.essay.TieuLuan_BE.service.UserService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import jakarta.servlet.http.HttpServletResponse;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -61,6 +63,9 @@ public class AuthController {
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientId;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/signup") //Create new user
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws UserException {
 
@@ -106,7 +111,10 @@ public class AuthController {
         Authentication authentication = authenticate(username, password);
         //Tạo jwt token
         String token = jwtProvider.generateToken(authentication);
-
+        User use = userRepository.findByEmail(username);
+        if(!use.getVerification().isStatus()){
+            throw new UserException("User has been banned");
+        }
         AuthResponse authResponse = new AuthResponse(token, true);
         //Return token to client for validate further
         return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.ACCEPTED);
@@ -121,6 +129,7 @@ public class AuthController {
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid username of password...");
         }
+
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
     @PostMapping("/sendVerificationCode")
@@ -156,6 +165,8 @@ public class AuthController {
     }
     private boolean checkEmail(String email){
         boolean res = userRepository.findByEmail(email) != null;
+        System.out.println("email: "+email );
+        System.out.println("Res: "+res);
         return res;
     }
     @PostMapping("/google")
@@ -200,10 +211,18 @@ public class AuthController {
 
             // Tạo JWT
             String jwt = jwtProvider.generateToken(authentication);
+            if(!user.getVerification().isStatus()){
+                throw new UserException("User has been banned");
+            }
             AuthResponse authResponse = new AuthResponse(jwt, true);
             return new ResponseEntity<>(authResponse, HttpStatus.OK);
         } catch (Exception e) {
             throw new RuntimeException("Google authentication failed: " + e.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        AuthController test= new AuthController();
+        System.out.println(test.checkEmail("phanthanhbinh2003@gmail.com"));;
     }
 }

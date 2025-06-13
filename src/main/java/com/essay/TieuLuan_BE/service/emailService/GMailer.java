@@ -41,7 +41,7 @@ public class GMailer {
             throws IOException {
 
         GoogleClientSecrets clientSecrets =
-                GoogleClientSecrets.load(jsonFactory, new InputStreamReader(GMailer.class.getResourceAsStream("/client_secret_835954791698-9df5so44ci7te4b90ivuv2algl1k37oc.apps.googleusercontent.com.json")));
+                GoogleClientSecrets.load(jsonFactory, new InputStreamReader(GMailer.class.getResourceAsStream("/client_secret_835954791698-rfr0rg4ca365ts1eorn1bl5mv5h9unps.apps.googleusercontent.com.json")));
 
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
@@ -63,7 +63,7 @@ public class GMailer {
         email.setFrom(new InternetAddress(EMAIL));
         email.addRecipient(javax.mail.Message.RecipientType.TO,
                 new InternetAddress(to));
-        email.setSubject("Verification code");
+        email.setSubject("Social media");
         email.setText(message);
         email.setFrom(new InternetAddress(EMAIL, "social_media"));
 

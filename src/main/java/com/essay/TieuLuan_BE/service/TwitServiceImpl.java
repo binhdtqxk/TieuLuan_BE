@@ -103,8 +103,9 @@ public class TwitServiceImpl implements TwitService {
 
         Twit saveReply = twitRepository.save(twit);
         OGTwit.getReplyTwits().add(saveReply);
+        System.out.println(twit.getUser().getId() +" "+ user.getId());
         if(!Objects.equals(twit.getUser().getId(), user.getId())){
-//            System.out.println("bat dau tao ");
+            System.out.println("bat dau tao ");
             User recipient=twit.getUser();
             notificationService.sendNotification(NotificationType.REPLY, user,recipient,twit);
 //            System.out.println("gui xong");

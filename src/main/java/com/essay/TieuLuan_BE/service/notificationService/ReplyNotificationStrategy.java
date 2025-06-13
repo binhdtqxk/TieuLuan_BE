@@ -30,6 +30,7 @@ public class ReplyNotificationStrategy implements NotificationStrategy{
 //        notification.setTwit(twit);
 //        notificationRepository.save(notification);
 //        return NotificationDtoMapper.toNotificationDto(notification);
+        System.out.println("da vao reply strat");
         Notification notification = new Notification();
         notification.setType(NotificationType.REPLY);
         notification.setSender(sender);

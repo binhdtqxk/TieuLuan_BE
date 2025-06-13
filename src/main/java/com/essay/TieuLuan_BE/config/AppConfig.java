@@ -45,33 +45,13 @@ public class AppConfig {
 //        http.httpBasic(withDefaults());
         return http.build();
     }
-//    private OidcUserService oidcUserService(JwtProvider jwtProvider) {
-//        OidcUserService oidcUserService = new OidcUserService();
-//        oidcUserService.setOauth2UserService((OAuth2UserRequest userRequest) -> {
-//            OAuth2User oauth2User = new DefaultOAuth2UserService().loadUser(userRequest);
-//            String email = oauth2User.getAttribute("email");
-//            Authentication authentication = new UsernamePasswordAuthenticationToken(
-//                    email,
-//                    null,
-//                    Collections.singletonList(() -> "ROLE_USER")
-//            );
-//            String jwt = jwtProvider.generateToken(authentication);
-//            // Lưu JWT vào response header
-//            return new DefaultOidcUser(
-//                    authentication.getAuthorities(),
-//                    userRequest.getIdToken(),
-//                    oauth2User.getAttributes(),
-//                    "sub"
-//            );
-//        });
-//        return oidcUserService;
-//    }
+
     private CorsConfigurationSource corsConfigrationSource() {
         return new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration cfg = new CorsConfiguration();
-                cfg.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+                cfg.setAllowedOrigins(Arrays.asList("http://localhost:5173" ));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
                 cfg.setAllowedHeaders(Collections.singletonList("*"));

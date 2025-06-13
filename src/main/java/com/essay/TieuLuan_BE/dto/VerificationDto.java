@@ -1,13 +1,11 @@
-package com.essay.TieuLuan_BE.entity;
+package com.essay.TieuLuan_BE.dto;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
-
 @Data
-public class Verification {
-
-    private boolean status=true;
+public class VerificationDto {
+    private boolean status;
     private LocalDateTime startedAt;
     private LocalDateTime endsAt;
     private String planType;

@@ -23,6 +23,6 @@ public class NotificationKafkaConsumer {
     public void consumeNotification(NotificationDto notificationDto) {
 
         messagingTemplate.convertAndSend("/topic/notifications", notificationDto);
-//        System.out.println("Đã gửi thông báo qua WebSocket: " + notificationDto);
+        System.out.println("Đã gửi thông báo qua WebSocket: " + notificationDto);
     }
 }

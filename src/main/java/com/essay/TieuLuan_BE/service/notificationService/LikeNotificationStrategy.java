@@ -28,6 +28,7 @@ public class LikeNotificationStrategy implements NotificationStrategy {
         notification.setSender(sender);
         notification.setRecipient(recipient);
         String fullName= sender.getFullName().replace(" ", "_")+ sender.getId();
+        System.out.println("fullname: "+ fullName);
         String content=fullName+" liked your tweet";
         notification.setContent(content);
         notification.setTwit(twit);
